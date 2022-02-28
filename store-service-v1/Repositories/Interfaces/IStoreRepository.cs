@@ -6,5 +6,7 @@ namespace store_service_v1.Repositories.Interfaces
     {
         Task<List<InventoryLine>> GetInventory();
         Task<Order> GetOrder(int orderId);
+        Task<int> PostOrder(Order order);
+        Task DeleteOrder(int orderId);
     }
 }
