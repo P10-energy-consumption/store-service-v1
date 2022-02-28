@@ -1,4 +1,5 @@
-﻿using store_service_v1.Database.Interfaces;
+﻿using Npgsql;
+using store_service_v1.Database.Interfaces;
 using System.Data.SqlClient;
 
 namespace store_service_v1.Database
@@ -14,9 +15,10 @@ namespace store_service_v1.Database
             _connectionString = new Lazy<string>(() => _configuration.GetValue<string>("postgres"));
         }
 
-        public SqlConnection CreateDBConnection()
+        public NpgsqlConnection CreateDBConnection()
         {
-            return new SqlConnection(_connectionString.Value);
+            var connection = new NpgsqlConnection(_connectionString.Value);
+            return connection;
         }
     }
 }
