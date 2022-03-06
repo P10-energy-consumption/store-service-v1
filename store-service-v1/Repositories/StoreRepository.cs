@@ -44,8 +44,9 @@ namespace store_service_v1.Repositories
             }
         }
 
-        public async Task DeleteOrder(int orderId)
+        public async Task<int> DeleteOrder(int orderId)
         {
+            var result = -1;
             var sql = @"delete from orders where id = @Id";
 
             using (var _connection = _connectionFactory.CreateDBConnection())
@@ -54,35 +55,7 @@ namespace store_service_v1.Repositories
 
                 try
                 {
-                    await _connection.ExecuteAsync(sql, new { id = orderId });
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-                finally
-                {
-                    _connection.Close();
-                }
-            }
-        }
-
-        public async Task<int> PostOrder(Order order)
-        {
-            var result = -1;
-            var sql = @" /* PetStore.Store.Api */
-insert into orders (id, petid, quantity, shipdate, status, complete, created, createdby) 
-OUTPUT Inserted.ID
-values (@id, @petid, @quantity, @shipdate, @status, @complete, current_timestamp, 'PetStore.Store.Api');";
-
-            using (var _connection = _connectionFactory.CreateDBConnection())
-            {
-                await _connection.OpenAsync();
-
-                try
-                {
-                    result = await _connection.ExecuteScalarAsync<int>(sql, order);
+                    result = await _connection.ExecuteAsync(sql, new { id = orderId });
                 }
                 catch (Exception)
                 {
@@ -96,6 +69,35 @@ values (@id, @petid, @quantity, @shipdate, @status, @complete, current_timestamp
             }
 
             return result;
+        }
+
+        public async Task<Order> PostOrder(Order order)
+        {
+            var sql = @" /* PetStore.Store.Api */
+insert into orders (id, petid, quantity, shipdate, status, complete, created, createdby) 
+OUTPUT Inserted.ID
+values (@id, @petid, @quantity, @shipdate, @status, @complete, current_timestamp, 'PetStore.Store.Api');";
+
+            using (var _connection = _connectionFactory.CreateDBConnection())
+            {
+                await _connection.OpenAsync();
+
+                try
+                {
+                    await _connection.ExecuteScalarAsync<int>(sql, order);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+                finally
+                {
+                    _connection.Close();
+                }
+            }
+
+            return order;
         }
 
         public async Task<Order> GetOrder(int orderId)

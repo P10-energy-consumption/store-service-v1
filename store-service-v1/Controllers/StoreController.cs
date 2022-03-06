@@ -41,8 +41,8 @@ namespace store_service_v1.Controllers
         {
             if (order != null)
             {
-                var orderId = await _storeRepository.PostOrder(order);
-                var result = await _storeRepository.GetOrder(orderId);
+                var resultOrder = await _storeRepository.PostOrder(order);
+                var result = await _storeRepository.GetOrder(resultOrder.Id);
 
                 return Ok(result);
             }
