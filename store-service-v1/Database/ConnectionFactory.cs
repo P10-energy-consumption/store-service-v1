@@ -12,12 +12,12 @@ namespace store_service_v1.Database
         public ConnectionFactory(IConfiguration configuration)
         {
             _configuration = configuration;
-            _connectionString = new Lazy<string>(() => _configuration.GetValue<string>("postgres"));
+            _connectionString = new Lazy<string>(() => _configuration.GetValue<string>("mssql"));
         }
 
-        public NpgsqlConnection CreateDBConnection()
+        public SqlConnection CreateDBConnection()
         {
-            var connection = new NpgsqlConnection(_connectionString.Value);
+            var connection = new SqlConnection(_connectionString.Value);
             return connection;
         }
     }

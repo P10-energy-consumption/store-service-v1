@@ -6,6 +6,6 @@ namespace store_service_v1.Database.Interfaces
 {
     public interface IConnectionFactory
     {
-        NpgsqlConnection CreateDBConnection();
+        SqlConnection CreateDBConnection();
     }
 }
