@@ -17,9 +17,19 @@ namespace store_service_v1.Repositories
 
         public async Task<List<InventoryLine>> GetInventory()
         {
+<<<<<<< Updated upstream
             var sql = @"select p.Status, count(p.Id) from pets.pet p
                     where p.IsDelete = false
                     group by p.Status";
+=======
+            var result = new List<InventoryLine>();
+            var sql = @" /* PetStore.Store.Api */
+update orders.order set
+    Deleted = current_timestamp,
+    DeletedBy = 'PetStore.Store.Api',
+    IsDelete = true
+where id = @Id";
+>>>>>>> Stashed changes
 
             using (var _connection = _connectionFactory.CreateDBConnection())
             {
@@ -76,7 +86,10 @@ where id = @Id";
             var sql = @" /* PetStore.Store.Api */
 insert into orders.order (petid, quantity, shipdate, status, complete, created, createdby) 
 values (@petid, @quantity, @shipdate, @status, @complete, current_timestamp, 'PetStore.Store.Api');
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 select currval('orders.order_id_seq');";
 
             using (var _connection = _connectionFactory.CreateDBConnection())
@@ -102,10 +115,18 @@ select currval('orders.order_id_seq');";
 
         public async Task<Order> GetOrder(int orderId)
         {
+<<<<<<< Updated upstream
             var sql = @"select o.Id, o.Status, o.PetId, o.Quantity, o.ShipDate, o.Complete 
                         from orders.order o
                         where o.IsDelete = false
                         and o.id = @id";
+=======
+            var sql = @" /* PetStore.Store.Api */
+select o.Id, o.Status, o.PetId, o.Quantity, o.ShipDate, o.Complete 
+from orders.order o
+where o.IsDelete = false
+and o.id = @id";
+>>>>>>> Stashed changes
 
             using (var _connection = _connectionFactory.CreateDBConnection())
             {
