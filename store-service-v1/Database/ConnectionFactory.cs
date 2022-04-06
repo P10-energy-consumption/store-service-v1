@@ -17,12 +17,8 @@ namespace store_service_v1.Database
 
         public NpgsqlConnection CreateDBConnection()
         {
-<<<<<<< Updated upstream
             var connection = new NpgsqlConnection(_connectionString.Value);
             return connection;
-=======
-            return new NpgsqlConnection(_connectionString.Value);
->>>>>>> Stashed changes
         }
     }
 }
