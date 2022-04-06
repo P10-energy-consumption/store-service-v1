@@ -17,9 +17,10 @@ namespace store_service_v1.Repositories
 
         public async Task<List<InventoryLine>> GetInventory()
         {
-            var sql = @"select p.Status, count(p.Id) from pets.pet p
-                    where p.IsDelete = false
-                    group by p.Status";
+            var sql = @" /* PetStore.Store.Api */
+select p.Status, count(p.Id) from pets.pet p
+where p.IsDelete = false
+group by p.Status";
 
             using (var _connection = _connectionFactory.CreateDBConnection())
             {
@@ -76,7 +77,6 @@ where id = @Id";
             var sql = @" /* PetStore.Store.Api */
 insert into orders.order (petid, quantity, shipdate, status, complete, created, createdby) 
 values (@petid, @quantity, @shipdate, @status, @complete, current_timestamp, 'PetStore.Store.Api');
-
 select currval('orders.order_id_seq');";
 
             using (var _connection = _connectionFactory.CreateDBConnection())
@@ -102,10 +102,11 @@ select currval('orders.order_id_seq');";
 
         public async Task<Order> GetOrder(int orderId)
         {
-            var sql = @"select o.Id, o.Status, o.PetId, o.Quantity, o.ShipDate, o.Complete 
-                        from orders.order o
-                        where o.IsDelete = false
-                        and o.id = @id";
+            var sql = @" /* PetStore.Store.Api */
+select o.Id, o.Status, o.PetId, o.Quantity, o.ShipDate, o.Complete 
+from orders.order o
+where o.IsDelete = false
+and o.id = @id";
 
             using (var _connection = _connectionFactory.CreateDBConnection())
             {
