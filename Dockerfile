@@ -8,16 +8,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["monolithic-service/monolithic-service.csproj", "monolithic-service/"]
-RUN dotnet restore "monolithic-service/monolithic-service.csproj"
+COPY ["store-service-v1/store-service-v1.csproj", "store-service-v1/"]
+RUN dotnet restore "store-service-v1/store-service-v1.csproj"
 COPY . .
-WORKDIR "/src/monolithic-service"
-RUN dotnet build "monolithic-service.csproj" -c Release -o /app/build
+WORKDIR "/src/store-service-v1"
+RUN dotnet build "store-service-v1.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "monolithic-service.csproj" -c Release -o /app/publish
+RUN dotnet publish "store-service-v1.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "monolithic-service.dll"]
+ENTRYPOINT ["dotnet", "store-service-v1.dll"]
