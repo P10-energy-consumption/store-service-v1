@@ -17,6 +17,7 @@ namespace store_service_v1.Repositories
 
         public async Task<List<InventoryLine>> GetInventory()
         {
+            var result = new List<InventoryLine>();
             var sql = @" /* PetStore.Store.Api */
 select p.Status, count(p.Id) from pets.pet p
 where p.IsDelete = false
@@ -24,12 +25,11 @@ group by p.Status";
 
             using (var _connection = _connectionFactory.CreateDBConnection())
             {
-                await _connection.OpenAsync();
+                _connection.Open();
 
                 try
                 {
-                    var result = await _connection.QueryAsync<InventoryLine>(sql);
-                    return result.ToList();
+                    result = (await _connection.QueryAsync<InventoryLine>(sql)).ToList();
                 }
                 catch (Exception)
                 {
@@ -40,21 +40,19 @@ group by p.Status";
                 {
                     _connection.Close();
                 }
+
+                return result;
             }
         }
 
         public async Task DeleteOrder(int orderId)
         {
             var sql = @" /* PetStore.Store.Api */
-update orders.order set
-    Deleted = current_timestamp,
-    DeletedBy = 'PetStore.Store.Api',
-    IsDelete = true
-where id = @Id";
+delete from orders.order where id = @Id";
 
             using (var _connection = _connectionFactory.CreateDBConnection())
             {
-                await _connection.OpenAsync();
+                _connection.Open();
 
                 try
                 {
@@ -75,18 +73,16 @@ where id = @Id";
         public async Task<int> PostOrder(Order order)
         {
             var sql = @" /* PetStore.Store.Api */
-insert into orders.order (petid, quantity, shipdate, status, complete, created, createdby) 
-values (@petid, @quantity, @shipdate, @status, @complete, current_timestamp, 'PetStore.Store.Api');
-select currval('orders.order_id_seq');";
+insert into orders.order (id, petid, quantity, shipdate, status, complete, created, createdby) 
+values (@id, @petid, @quantity, @shipdate, @status, @complete, current_timestamp, 'PetStore.Store.Api');";
 
             using (var _connection = _connectionFactory.CreateDBConnection())
             {
-                await _connection.OpenAsync();
+                _connection.Open();
 
                 try
                 {
-                    var result = await _connection.ExecuteScalarAsync<int>(sql, order);
-                    return result;
+                    await _connection.ExecuteAsync(sql, order);
                 }
                 catch (Exception)
                 {
@@ -98,6 +94,7 @@ select currval('orders.order_id_seq');";
                     _connection.Close();
                 }
             }
+            return order.Id;
         }
 
         public async Task<Order> GetOrder(int orderId)
@@ -110,7 +107,7 @@ and o.id = @id";
 
             using (var _connection = _connectionFactory.CreateDBConnection())
             {
-                await _connection.OpenAsync();
+                _connection.Open();
 
                 try
                 {
